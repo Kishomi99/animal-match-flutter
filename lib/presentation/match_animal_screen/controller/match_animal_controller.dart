@@ -6,24 +6,34 @@ import 'package:get/get.dart';
 
 class AnimalMatchController extends GetxController {
   List<Animal> animals = [
-    Animal(name: 'monkey', imagePath: ImageConstant.monkey),
-    Animal(name: 'horse', imagePath: ImageConstant.horse),
-    Animal(name: 'parrot', imagePath: ImageConstant.parrot),
-    Animal(name: 'panda', imagePath: ImageConstant.panda),
-    Animal(name: 'turtle', imagePath: ImageConstant.turtle),
-    Animal(name: 'donkey', imagePath: ImageConstant.donkey),
-    Animal(name: 'rabbit', imagePath: ImageConstant.rabbit),
+    Animal(name: 'குரங்கு', imagePath: ImageConstant.monkey),
+    Animal(name: 'குதிரை', imagePath: ImageConstant.horse),
+    Animal(name: 'கிளி', imagePath: ImageConstant.parrot),
+    Animal(name: 'மயில்', imagePath: ImageConstant.peacock),
+    Animal(name: 'பாண்டா', imagePath: ImageConstant.panda),
+    Animal(name: 'ஆமை', imagePath: ImageConstant.turtle),
+    Animal(name: 'கழுதை', imagePath: ImageConstant.donkey),
+    Animal(name: 'முயல்', imagePath: ImageConstant.rabbit),
+    Animal(name: 'நாய்', imagePath: ImageConstant.dog),
+    Animal(
+        name: 'monkey', tamilName: 'குரங்கு', imagePath: ImageConstant.monkey),
+    Animal(name: 'horse', tamilName: 'குதிரை', imagePath: ImageConstant.horse),
+    Animal(name: 'parrot', tamilName: 'கிளி', imagePath: ImageConstant.parrot),
+    Animal(
+        name: 'peacock', tamilName: 'மயில்', imagePath: ImageConstant.peacock),
+    Animal(name: 'panda', tamilName: 'பாண்டா', imagePath: ImageConstant.panda),
+    Animal(name: 'turtle', tamilName: 'ஆமை', imagePath: ImageConstant.turtle),
+    Animal(name: 'donkey', tamilName: 'கழுதை', imagePath: ImageConstant.donkey),
+    Animal(name: 'rabbit', tamilName: 'முயல்', imagePath: ImageConstant.rabbit),
     Animal(name: 'dog', imagePath: ImageConstant.dog),
-
-    // Add more animals here
   ];
 
   List<Color> colors = [
-    Color.fromARGB(255, 238, 147, 140),
-    Color.fromARGB(255, 163, 227, 165),
-    Color.fromARGB(255, 138, 186, 225),
-    Color.fromARGB(255, 235, 223, 112),
-    Color.fromARGB(255, 222, 166, 82),
+    const Color.fromARGB(255, 238, 147, 140),
+    const Color.fromARGB(255, 163, 227, 165),
+    const Color.fromARGB(255, 138, 186, 225),
+    const Color.fromARGB(255, 235, 223, 112),
+    const Color.fromARGB(255, 222, 166, 82),
     const Color.fromARGB(255, 210, 118, 226),
     const Color.fromARGB(255, 237, 130, 165),
     const Color.fromARGB(255, 139, 221, 232),
@@ -39,12 +49,13 @@ class AnimalMatchController extends GetxController {
   late List<String> selectedAnimalLetters;
   List<String> checkfullWord = [];
   late List<Color> shuffledColors;
+  late List<Color> shuffledColors2;
 
   @override
   void onInit() {
     super.onInit();
     random.value = List<Animal>.from(animals)..shuffle();
-
+    print(random.map((animal) => animal.name).toList());
     nextAnimal();
   }
 
@@ -52,11 +63,11 @@ class AnimalMatchController extends GetxController {
   void nextAnimal() {
     if (currentIndex < 6) {
       //  print("Current Index: $currentIndex");
-
       selectedAnimal = random[currentIndex];
-      selectedAnimalLetters = selectedAnimal.name.split('');
+      selectedAnimalLetters = selectedAnimal.name.characters.toList();
       shuffledLetters = List<String>.from(selectedAnimalLetters)..shuffle();
       shuffledColors = List<Color>.from(colors)..shuffle();
+      shuffledColors2 = List<Color>.from(colors)..shuffle();
 
       droppedLetters = List<String?>.filled(selectedAnimalLetters.length, null);
       update(); // refresh UI
@@ -66,13 +77,13 @@ class AnimalMatchController extends GetxController {
   }
 
   void dropLetter(int index, String letter) {
-    print("$letter dropped at index $index");
+    // print("$letter dropped at index $index");
     if (selectedAnimalLetters[index] == letter &&
         droppedLetters[index] == null) {
       droppedLetters[index] = letter;
       update();
-      print("Current word: droppedLetters[index] = $droppedLetters");
-      print(droppedLetters.join());
+      //  print("Current word: droppedLetters[index] = $droppedLetters");
+      //  print(droppedLetters.join());
       if (droppedLetters.join() == selectedAnimal.name) {
         Get.defaultDialog(
           title: "✅ Correct!",
