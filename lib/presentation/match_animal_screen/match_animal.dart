@@ -29,83 +29,103 @@ class AnimalMatchScreen extends GetWidget<AnimalMatchController> {
                     children: [
                       Text(
                         "title".tr,
-                        style: TextStyle(
+                        style: const TextStyle(
                             color: Color.fromARGB(255, 5, 44, 76),
                             fontWeight: FontWeight.bold,
                             fontSize: 25),
                       ),
-                      Text(
-                        "Questions 1 / 6 ",
-                        style: TextStyle(
-                            color: Color.fromARGB(255, 146, 133, 133),
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16),
+                      GetBuilder<AnimalMatchController>(
+                        builder: (_) => Text(
+                          "Questions  ${controller.currentIndex + 1} / 6 ",
+                          style: TextStyle(
+                              color: Color.fromARGB(255, 146, 133, 133),
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16),
+                        ),
                       ),
+
                       SizedBox(height: 20),
                       Center(
-                        child: Image.asset(
+                          child: GetBuilder<AnimalMatchController>(
+                        builder: (_) => Image.asset(
                           controller.selectedAnimal.imagePath,
                           height: screensize.height * 0.35,
                         ),
-                      ),
+                      )),
                       SizedBox(height: 20),
                       // Target boxes
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(
-                          controller.selectedAnimalLetters.length,
-                          (index) {
-                            controller.selectedAnimalLetters[index];
-                            return DragTarget<String>(
-                              onAcceptWithDetails: (details) {
-                                controller.dropLetter(index, details.data);
-                              },
-                              builder: (context, candidateData, rejectedData) {
-                                final letter =
-                                    controller.selectedAnimalLetters[index];
-                                return Container(
-                                  width: 50,
-                                  height: 50,
-                                  margin:
-                                      const EdgeInsets.symmetric(horizontal: 4),
-                                  decoration: BoxDecoration(
-                                    color: /*letter == ""
-                                        ? Colors.green
-                                        : */
-                                        controller.shuffledColors[index],
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    letter.toUpperCase(),
-                                    style: const TextStyle(fontSize: 24),
-                                  ),
-                                );
-                              },
-                            );
-                          },
+                      GetBuilder<AnimalMatchController>(
+                        builder: (_) => Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(
+                            controller.selectedAnimalLetters.length,
+                            (index) {
+                              final dropped = controller.droppedLetters[index];
+                              print("object: dropped $dropped");
+                              return DragTarget<String>(
+                                onAcceptWithDetails: (details) {
+                                  controller.dropLetter(index, details.data);
+                                },
+                                builder:
+                                    (context, candidateData, rejectedData) {
+                                  final letter =
+                                      controller.selectedAnimalLetters[index];
+                                  return Container(
+                                    width: 50,
+                                    height: 50,
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 4),
+                                    decoration: BoxDecoration(
+                                      color: letter == dropped
+                                          ? Colors.green
+                                          : controller.shuffledColors[index],
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      letter.toUpperCase(),
+                                      style: const TextStyle(fontSize: 24),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                          ),
                         ),
-                      ),
+                      )
                     ],
                   ),
                 ),
               ),
               const SizedBox(height: 20),
-              Wrap(
-                spacing: 10,
-                runSpacing: 10,
-                children: controller.shuffledLetters.map((letter) {
-                  return Draggable<String>(
-                    data: letter,
-                    feedback: Material(
-                      color: Colors.transparent,
-                      child: buildLetterTile(letter),
-                    ),
-                    child: buildLetterTile(letter),
-                    childWhenDragging: buildLetterTile('', faded: true),
-                  );
-                }).toList(),
-              ),
+              GetBuilder<AnimalMatchController>(
+                builder: (_) => Padding(
+                  padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                  child: Wrap(
+                    spacing: 10,
+                    runSpacing: 10,
+                    children: controller.shuffledLetters.map((letter) {
+                      return Draggable<String>(
+                        data: letter,
+                        feedback: Material(
+                          color: Colors.transparent,
+                          child: buildLetterTile(
+                            letter,
+                            Colors.blue,
+                          ),
+                        ),
+                        child: buildLetterTile(
+                          letter,
+                          controller.shuffledColors[
+                              controller.shuffledLetters.indexOf(letter) + 5],
+                        ),
+                        childWhenDragging:
+                            buildLetterTile('', Colors.blue, faded: true),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              )
             ],
           ),
         ),
@@ -114,13 +134,13 @@ class AnimalMatchScreen extends GetWidget<AnimalMatchController> {
   }
 }
 
-Widget buildLetterTile(String letter, {bool faded = false}) {
+Widget buildLetterTile(String letter, Color? color, {bool faded = false}) {
   return Container(
     width: 70,
-    height: 60,
+    height: 70,
     alignment: Alignment.center,
     decoration: BoxDecoration(
-      color: faded ? Colors.grey[300] : Colors.blue,
+      color: faded ? Colors.grey[300] : color,
       borderRadius: BorderRadius.circular(8),
     ),
     child: Text(

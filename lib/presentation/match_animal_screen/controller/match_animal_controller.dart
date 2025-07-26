@@ -1,5 +1,6 @@
 import 'package:earlybeez_task/constants/image_constant.dart';
 import 'package:earlybeez_task/presentation/match_animal_screen/model/animal_model.dart';
+import 'package:earlybeez_task/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -9,6 +10,11 @@ class AnimalMatchController extends GetxController {
     Animal(name: 'horse', imagePath: ImageConstant.horse),
     Animal(name: 'parrot', imagePath: ImageConstant.parrot),
     Animal(name: 'panda', imagePath: ImageConstant.panda),
+    Animal(name: 'turtle', imagePath: ImageConstant.turtle),
+    Animal(name: 'donkey', imagePath: ImageConstant.donkey),
+    Animal(name: 'rabbit', imagePath: ImageConstant.rabbit),
+    Animal(name: 'dog', imagePath: ImageConstant.dog),
+
     // Add more animals here
   ];
 
@@ -25,51 +31,71 @@ class AnimalMatchController extends GetxController {
     Colors.grey,
     const Color.fromARGB(255, 160, 228, 221),
   ];
+  List<String?> droppedLetters = [];
 
-  late List<Animal> random;
+  RxList<Animal> random = <Animal>[].obs;
   late Animal selectedAnimal;
   late List<String> shuffledLetters;
   late List<String> selectedAnimalLetters;
-  String droppedWord = '';
+  List<String> checkfullWord = [];
   late List<Color> shuffledColors;
 
   @override
   void onInit() {
     super.onInit();
-    random = List<Animal>.from(animals)..shuffle();
-    selectedAnimal = random.first;
-    selectedAnimalLetters = selectedAnimal.name.split('');
-    shuffledLetters = selectedAnimal.name.split('')..shuffle();
-    shuffledColors = List<Color>.from(colors)..shuffle();
+    random.value = List<Animal>.from(animals)..shuffle();
 
-    print(selectedAnimal.name);
-    print(selectedAnimalLetters);
+    nextAnimal();
+  }
+
+  int currentIndex = 0;
+  void nextAnimal() {
+    if (currentIndex < 6) {
+      //  print("Current Index: $currentIndex");
+
+      selectedAnimal = random[currentIndex];
+      selectedAnimalLetters = selectedAnimal.name.split('');
+      shuffledLetters = List<String>.from(selectedAnimalLetters)..shuffle();
+      shuffledColors = List<Color>.from(colors)..shuffle();
+
+      droppedLetters = List<String?>.filled(selectedAnimalLetters.length, null);
+      update(); // refresh UI
+    } else {
+      Get.offAllNamed(AppRoutes.sucessScreen);
+    }
   }
 
   void dropLetter(int index, String letter) {
-    selectedAnimalLetters[index] = letter;
-    //droppedLetters.refresh();
-
-    if (!selectedAnimalLetters.contains('')) {
-      final word = selectedAnimalLetters.join();
-      if (word == selectedAnimal.name) {
-        // showDialog(
-        //   context: Get.context!,
-        //   builder: (_) => const AlertDialog(
-        //     title: Text('✅ Success'),
-        //     content: Text('You matched the word correctly!'),
-        //   ),
-        //);
-      } else {
-        showDialog(
-          context: Get.context!,
-          builder: (_) => const AlertDialog(
-            title: Text('❌ Try Again'),
-            content: Text('That\'s not the correct word.'),
-            backgroundColor: Color.fromARGB(255, 233, 105, 96),
-          ),
+    print("$letter dropped at index $index");
+    if (selectedAnimalLetters[index] == letter &&
+        droppedLetters[index] == null) {
+      droppedLetters[index] = letter;
+      update();
+      print("Current word: droppedLetters[index] = $droppedLetters");
+      print(droppedLetters.join());
+      if (droppedLetters.join() == selectedAnimal.name) {
+        Get.defaultDialog(
+          title: "✅ Correct!",
+          content: const Text("Well done! Moving to the next animal..."),
+          onConfirm: () {
+            Get.back(); // Close dialog
+            currentIndex++;
+            nextAnimal();
+          },
+          textConfirm: "Next",
         );
       }
+
+      update(); // refresh UI
+    } else {
+      showDialog(
+        context: Get.context!,
+        builder: (_) => const AlertDialog(
+          title: Text('❌ Try Again'),
+          content: Text('That\'s not the correct letter.'),
+          backgroundColor: Color.fromARGB(255, 233, 105, 96),
+        ),
+      );
     }
   }
 }
