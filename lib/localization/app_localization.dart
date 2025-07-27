@@ -8,6 +8,7 @@ class AppLocalization extends Translations {
           "back": "Play Again",
           "win": "You Win!",
           "next": "Next",
+          "congratulations": "Congratulations!",
         }
       };
 }
