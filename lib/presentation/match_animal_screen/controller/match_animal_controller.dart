@@ -55,7 +55,6 @@ class AnimalMatchController extends GetxController {
   void onInit() {
     super.onInit();
     random.value = List<Animal>.from(animals)..shuffle();
-    print(random.map((animal) => animal.name).toList());
     nextAnimal();
   }
 

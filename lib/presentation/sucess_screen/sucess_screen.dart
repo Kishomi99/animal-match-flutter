@@ -16,7 +16,7 @@ class SucessScreenScreen extends GetWidget<SucessController> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(10.0),
-          child: Container(
+          child: SizedBox(
             width: double.infinity,
             height: screenHeight * 0.8,
             child: Column(
@@ -28,7 +28,7 @@ class SucessScreenScreen extends GetWidget<SucessController> {
                   style: TextStyle(
                     fontSize: screenWidth * 0.07,
                     fontWeight: FontWeight.bold,
-                    color: Color.fromARGB(255, 223, 88, 133),
+                    color: const Color.fromARGB(255, 223, 88, 133),
                   ),
                 ),
                 Lottie.asset(
@@ -46,18 +46,18 @@ class SucessScreenScreen extends GetWidget<SucessController> {
                   onPressed: () {
                     Get.offAllNamed(AppRoutes.animalMatch);
                   },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 223, 88, 133),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
                   child: Text(
                     "back".tr,
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: Color.fromARGB(255, 5, 44, 76),
-                    ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 223, 88, 133),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                 ),

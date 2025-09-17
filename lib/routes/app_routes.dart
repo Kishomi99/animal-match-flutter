@@ -14,7 +14,7 @@ class AppRoutes {
   static final pages = [
     GetPage(
       name: animalMatch,
-      page: () => AnimalMatchScreen(),
+      page: () => const AnimalMatchScreen(),
       binding: AnimalMatchBinding(),
     ),
     GetPage(
